@@ -15,7 +15,8 @@ public class PlayQueue {
      * @param song - The Song to add
      */
     public void addSong(Song song) {
-        // TODO: To be completed
+    	SongNode temp = new SongNode(song, null, end);
+        end = temp;
     }
 
     /**
