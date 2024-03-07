@@ -6,7 +6,7 @@ import doNotModify.SongNode;
 public class PlayQueue {
     public SongNode start; // DO NOT MODIFY
     public SongNode end;   // DO NOT MODIFY
-    // You may add extra attributes here
+    public int qLength;
 
     /**
      * Adds a Song to the end of the PlayQueue.
@@ -15,8 +15,15 @@ public class PlayQueue {
      * @param song - The Song to add
      */
     public void addSong(Song song) {
-    	SongNode temp = new SongNode(song, null, end);
-        end = temp;
+        SongNode newNode = new SongNode(song, null, null);
+        if (start == null) {
+            start = newNode;
+        } else {
+            end.next = newNode;
+            newNode.previous = end;
+        }
+        end = newNode;
+        qLength++;
     }
 
     /**
@@ -27,7 +34,41 @@ public class PlayQueue {
      * @return - true if a SongNode was removed, false otherwise.
      */
     public boolean removeSong(Song song) {
-        return false;  // TODO: To be completed
+        if(start == null) {
+        	System.out.println("first false");
+        	return false;
+        }
+        if(start.song.equals(song)) {
+        	start = start.next;
+        	if(start == null) {
+        		end = null;
+        	}
+        	System.out.println("first true");
+        	return true;
+        }
+        SongNode prev = start;
+        SongNode curr = start.next;
+        while(curr != null && !curr.song.equals(song)) {
+        	prev = curr;
+        	curr = curr.next;
+        }
+        if(curr != null && curr.song.equals(song)) {
+        	prev.next = curr.next;
+        	if(curr == end) {
+        		end = prev;
+        		if(end == null) {
+        			start = null;
+        			System.out.println(song + " want");
+                	System.out.println(curr.song + " have");
+        		}
+        	}
+        	System.out.println("second true");
+        	System.out.println(song + " want");
+        	System.out.println(curr.song + " have");
+        	return true;
+        }
+        System.out.println("second false");
+        return false;
     }
 
     /**
@@ -38,7 +79,21 @@ public class PlayQueue {
      * @param index
      */
     public Song removeSong(int index) {
-        return null;  // TODO: To be completed
+    	if(index > this.size() || index < 0) {
+    		return null;
+    	}
+    	if(start == null) {
+        	return null;
+        }
+    	int i = 0;
+    	SongNode temp = start;
+    	while(i < index) {
+    		i++;
+    		temp = temp.next;
+    	}
+    	if(i == index) {
+    		temp
+    	}
     }
 
     /**
@@ -46,7 +101,13 @@ public class PlayQueue {
      * @return the size of the PlayQueue
      */
     public int size() {
-        return -1;  // TODO: To be completed
+    	int result = 0;
+        SongNode temp = start;
+    	while(temp != null) {
+    		result++;
+    		temp = temp.next;
+    	}
+    	return result;
     }
 
     /**
