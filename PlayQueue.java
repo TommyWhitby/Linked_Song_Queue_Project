@@ -35,40 +35,22 @@ public class PlayQueue {
      */
     public boolean removeSong(Song song) {
         if(start == null) {
-        	System.out.println("first false");
         	return false;
         }
-        if(start.song.equals(song)) {
-        	start = start.next;
-        	if(start == null) {
-        		end = null;
+        int i = 0;
+        SongNode temp = start;
+        while(i != this.size()) {
+        	if(temp.song.equals(song)) {
+        		break;
         	}
-        	System.out.println("first true");
-        	return true;
+        	i++;
+        	temp = temp.next;
         }
-        SongNode prev = start;
-        SongNode curr = start.next;
-        while(curr != null && !curr.song.equals(song)) {
-        	prev = curr;
-        	curr = curr.next;
+        if(i == this.size()) {
+        	return false;
         }
-        if(curr != null && curr.song.equals(song)) {
-        	prev.next = curr.next;
-        	if(curr == end) {
-        		end = prev;
-        		if(end == null) {
-        			start = null;
-        			System.out.println(song + " want");
-                	System.out.println(curr.song + " have");
-        		}
-        	}
-        	System.out.println("second true");
-        	System.out.println(song + " want");
-        	System.out.println(curr.song + " have");
-        	return true;
-        }
-        System.out.println("second false");
-        return false;
+        removeSong(i);
+        return true;
     }
 
     /**
@@ -79,23 +61,33 @@ public class PlayQueue {
      * @param index
      */
     public Song removeSong(int index) {
-    	if(index > this.size() || index < 0) {
+    	if(index >= this.size() || index < 0) {
     		return null;
     	}
     	if(start == null) {
         	return null;
         }
-    	int i = 0;
     	SongNode temp = start;
-    	while(i < index) {
-    		i++;
+    	for(int i = 0; i < index; i++) {
     		temp = temp.next;
     	}
-    	if(i == index) {
-    		temp
+    	if(index == 0) {
+    		start = start.next;
     	}
+    	if(index == this.size() - 1) {
+    		end = end.previous;
+    	}
+    	SongNode nextNode = temp.next;
+    	SongNode prevNode = temp.previous;
+    	if(index != this.size() - 1) {
+    		nextNode.previous = prevNode;
+    	}
+    	if(index != 0) {
+    		prevNode.next = nextNode;
+    	}
+    	return temp.song;
     }
-
+    
     /**
      * Return the size (number of SongNodes) in the PlayQueue.
      * @return the size of the PlayQueue
