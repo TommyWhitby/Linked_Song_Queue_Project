@@ -52,7 +52,7 @@ public class PlayQueue {
         removeSong(i);
         return true;
     }
-
+    
     /**
      * Removes the SongNode at the specified index from the PlayQueue, returning
      * the Song that was removed.
