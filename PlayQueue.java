@@ -52,7 +52,7 @@ public class PlayQueue {
         removeSong(i);
         return true;
     }
-    
+
     /**
      * Removes the SongNode at the specified index from the PlayQueue, returning
      * the Song that was removed.
@@ -106,7 +106,18 @@ public class PlayQueue {
      * Reverse the calling object PlayQueues Song ordering.
      */
     public void reverseQueue() {
-        // TODO: To be completed
+    	SongNode temp = null;
+        SongNode current = start;
+ 
+        while(current != null){
+            temp = current.previous;
+            current.previous = current.next;
+            current.next = temp;
+            current = current.previous;
+        }
+        if(temp != null){
+        	start = temp.previous;
+        }
     }
 
     /**
@@ -147,7 +158,13 @@ public class PlayQueue {
      * @param amount
      */
     public void moveSong(int fromIndex, int amount) {
-        // TODO: To be completed
+        if(fromIndex < 0 || fromIndex > this.size()) {
+        	return;
+        }
+        if(amount < 0 || amount > this.size()) {
+        	return;
+        }
+        SongNode temp = 
     }
 
     /**
