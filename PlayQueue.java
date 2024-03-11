@@ -39,14 +39,14 @@ public class PlayQueue {
         }
         int i = 0;
         SongNode temp = start;
-        while(i != this.size()) {
+        while(i != qLength) {
         	if(temp.song.equals(song)) {
         		break;
         	}
         	i++;
         	temp = temp.next;
         }
-        if(i == this.size()) {
+        if(i == qLength) {
         	return false;
         }
         removeSong(i);
@@ -61,7 +61,7 @@ public class PlayQueue {
      * @param index
      */
     public Song removeSong(int index) {
-    	if(index >= this.size() || index < 0) {
+    	if(index >= qLength || index < 0) {
     		return null;
     	}
     	if(start == null) {
@@ -74,17 +74,18 @@ public class PlayQueue {
     	if(index == 0) {
     		start = start.next;
     	}
-    	if(index == this.size() - 1) {
+    	if(index == qLength - 1) {
     		end = end.previous;
     	}
     	SongNode nextNode = temp.next;
     	SongNode prevNode = temp.previous;
-    	if(index != this.size() - 1) {
+    	if(index != qLength - 1) {
     		nextNode.previous = prevNode;
     	}
     	if(index != 0) {
     		prevNode.next = nextNode;
     	}
+    	qLength--;
     	return temp.song;
     }
     
@@ -93,32 +94,28 @@ public class PlayQueue {
      * @return the size of the PlayQueue
      */
     public int size() {
-    	int result = 0;
-        SongNode temp = start;
-    	while(temp != null) {
-    		result++;
-    		temp = temp.next;
-    	}
-    	return result;
+    	return qLength;
     }
 
     /**
      * Reverse the calling object PlayQueues Song ordering.
      */
     public void reverseQueue() {
-    	SongNode temp = null;
-        SongNode current = start;
- 
-        while(current != null){
-            temp = current.previous;
+    	if (start == null || start == end) {
+            return;
+        }
+        SongNode current = end;
+        while(current != null) {
+            SongNode temp = current.previous;
             current.previous = current.next;
             current.next = temp;
-            current = current.previous;
+            current = temp;
         }
-        if(temp != null){
-        	start = temp.previous;
-        }
+        SongNode temp = start;
+        start = end;
+        end = temp;
     }
+    
 
     /**
      * Move the SongNode from the `fromIndex` index the specified `amount`.
@@ -164,7 +161,7 @@ public class PlayQueue {
         if(amount < 0 || amount > this.size()) {
         	return;
         }
-        SongNode temp = 
+        
     }
 
     /**
