@@ -155,10 +155,10 @@ public class PlayQueue {
      * @param amount
      */
     public void moveSong(int fromIndex, int amount) {
-        if(fromIndex < 0 || fromIndex > this.size()) {
+        if(fromIndex < 0 || fromIndex > qLength) {
         	return;
         }
-        if(amount < 0 || amount > this.size()) {
+        if(amount < 0 || amount > qLength) {
         	return;
         }
         
@@ -171,7 +171,21 @@ public class PlayQueue {
      * @param secondIndex
      */
     public void swapSongs(int firstIndex, int secondIndex) {
-        // TODO: To be completed
+    	if(start == null || firstIndex < 0 || firstIndex >= qLength || secondIndex < 0 || secondIndex >= qLength || firstIndex == secondIndex) {
+            return;
+        }
+        SongNode temp = start;
+        for(int i = 0; i < firstIndex; i++) {
+            temp = temp.next;
+        }
+        Song firstSong = temp.song;
+        SongNode temp2 = start;
+        for(int i = 0; i < secondIndex; i++) {
+            temp2 = temp2.next;
+        }
+        Song secondSong = temp2.song;
+        temp.song = secondSong;
+        temp2.song = firstSong;
     }
 
     /**
