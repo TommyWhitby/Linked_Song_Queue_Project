@@ -457,7 +457,43 @@ public class PlayQueue {
      * @return the shuffled queue
      */
     public PlayQueue shuffledQueue(int p, int s) {
-        return null;  // TODO: To be completed
+        PlayQueue shuffledQ = new PlayQueue();
+        shuffledQ.start = start;
+        shuffledQ.end = end;
+        
+        SongNode current = start;
+        SongNode shuffledCurrent= shuffledQ.start;
+        int index = 0;
+        if(current == null) {
+        	return shuffledQ;
+        }
+        while(current.next != null && shuffledCurrent.next != null) {
+        	int newIndex = (index ^ 2 + 1) % p * s % qLength;
+        	if(newIndex < 0) {
+        		newIndex += qLength;
+        	}
+        	SongNode newNode = getNodeAtIndex(newIndex);
+        	if(visitedNodes.containsKey(newNode) || visitedNodesBackwards.containsKey(newNode)) {
+        		break;
+        	}
+        	SongNode newShuffledNode = new SongNode(newNode.song, null, null);
+        	shuffledCurrent.next = newShuffledNode;
+        	shuffledCurrent = newShuffledNode;
+        	current = current.next;
+        	index++;
+        }
+        shuffledCurrent.next = current.next;
+        return shuffledQ;
+    }
+    
+    private SongNode getNodeAtIndex(int index) {
+    	SongNode current = start;
+    	int i = 0;
+    	while(current != null && i < index) {
+    		current = current.next;
+    		i++;
+    	}
+    	return current;
     }
 
 
