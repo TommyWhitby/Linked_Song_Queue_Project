@@ -2,8 +2,6 @@ package questions;
 
 import doNotModify.Song;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import doNotModify.SongNode;
 
@@ -11,7 +9,18 @@ public class PlayQueue {
     public SongNode start; // DO NOT MODIFY
     public SongNode end;   // DO NOT MODIFY
     public int qLength;
+    public HashMap<SongNode, Boolean> visitedNodes;
+    public HashMap<SongNode, Boolean> visitedNodesBackwards;
 
+    /**
+     * Constructor for PlayQueue class.
+     * Initializes the PlayQueue.
+     */
+    public PlayQueue() {
+        visitedNodes = new HashMap<>();
+        visitedNodesBackwards = new HashMap<>();
+    }
+    
     /**
      * Adds a Song to the end of the PlayQueue.
      * <p>
@@ -28,7 +37,24 @@ public class PlayQueue {
         }
         end = newNode;
         qLength++;
+        
+        //This is for updating the forwards hashmap
+        SongNode tempNode = start;
+        visitedNodes.clear();
+        while(tempNode != null) {
+        	visitedNodes.put(tempNode, true);
+        	tempNode = tempNode.next;
+        }
+        
+        //This is for updating the backwards hashmap
+        SongNode tempNodeB = end;
+        visitedNodesBackwards.clear();
+        while(tempNodeB != null) {
+        	visitedNodes.put(tempNodeB, true);
+        	tempNodeB = tempNodeB.previous;
+        }
     }
+    
     /* Creates a new SongNode with the song passed into the function and a next and previous == null
      * if start is empty, newNode becomes Start
      * otherwise add newNode to the end of the queue and update end to be newNode
@@ -94,6 +120,22 @@ public class PlayQueue {
     		prevNode.next = nextNode;
     	}
     	qLength--;
+
+        //This is for updating the forwards hashmap
+        SongNode tempNode = start;
+        visitedNodes.clear();
+        while(tempNode != null) {
+        	visitedNodes.put(tempNode, true);
+        	tempNode = tempNode.next;
+        }
+        
+        //This is for updating the backwards hashmap
+        SongNode tempNodeB = end;
+        visitedNodesBackwards.clear();
+        while(tempNodeB != null) {
+        	visitedNodes.put(tempNodeB, true);
+        	tempNodeB = tempNodeB.previous;
+        }
     	return temp.song;
     }
     
@@ -122,6 +164,22 @@ public class PlayQueue {
         SongNode temp = start;
         start = end;
         end = temp;
+
+        //This is for updating the forwards hashmap
+        SongNode tempNode = start;
+        visitedNodes.clear();
+        while(tempNode != null) {
+        	visitedNodes.put(tempNode, true);
+        	tempNode = tempNode.next;
+        }
+        
+        //This is for updating the backwards hashmap
+        SongNode tempNodeB = end;
+        visitedNodesBackwards.clear();
+        while(tempNodeB != null) {
+        	visitedNodes.put(tempNodeB, true);
+        	tempNodeB = tempNodeB.previous;
+        }
     }
     
 
@@ -218,6 +276,22 @@ public class PlayQueue {
                 temp.next.previous = temp;
             }
         }
+
+        //This is for updating the forwards hashmap
+        SongNode tempNode = start;
+        visitedNodes.clear();
+        while(tempNode != null) {
+        	visitedNodes.put(tempNode, true);
+        	tempNode = tempNode.next;
+        }
+        
+        //This is for updating the backwards hashmap
+        SongNode tempNodeB = end;
+        visitedNodesBackwards.clear();
+        while(tempNodeB != null) {
+        	visitedNodes.put(tempNodeB, true);
+        	tempNodeB = tempNodeB.previous;
+        }
     }
 
     /**
@@ -271,6 +345,22 @@ public class PlayQueue {
         } else {
         	end = secondSong;
         }
+
+        //This is for updating the forwards hashmap
+        SongNode tempNode = start;
+        visitedNodes.clear();
+        while(tempNode != null) {
+        	visitedNodes.put(tempNode, true);
+        	tempNode = tempNode.next;
+        }
+        
+        //This is for updating the backwards hashmap
+        SongNode tempNodeB = end;
+        visitedNodesBackwards.clear();
+        while(tempNodeB != null) {
+        	visitedNodes.put(tempNodeB, true);
+        	tempNodeB = tempNodeB.previous;
+        }
     }
 
     /**
@@ -303,29 +393,43 @@ public class PlayQueue {
 //    	return false;
 //    }
     
-    public boolean hasCycle() { //THIS IS THE FASTEST VERSION, it currently does not pass the timed test 100% of the time
-    	if(start == null || end == null) {
-    		return false;
-    	}
-    	SongNode slow = start;
-    	SongNode fast = start.next;
-    	SongNode slowB = end;
-    	SongNode fastB = end.previous;
-    	while(fast != null && fast.next != null) {
-    		if(slow == fast || slow == fast.next) {
-    			return true;
-    		}
-    		slow = slow.next;
-    		fast = fast.next.next;
-    	}
-    	while(fastB != null && fastB.previous != null) {
-    		if(slowB == fastB || slowB == fastB.previous) {
-    			return true;
-    		}
-    		slowB = slowB.previous;
-    		fastB = fastB.previous.previous;
-    	}
-    	return false;
+//    public boolean hasCycle() { //THIS IS THE FASTEST VERSION, it currently does not pass the timed test 100% of the time
+//    	if(start == null || end == null) {
+//    		return false;
+//    	}
+//    	SongNode slow = start;
+//    	SongNode fast = start.next;
+//    	SongNode slowB = end;
+//    	SongNode fastB = end.previous;
+//    	while(fast != null && fast.next != null) {
+//    		if(slow == fast || slow == fast.next) {
+//    			return true;
+//    		}
+//    		slow = slow.next;
+//    		fast = fast.next.next;
+//    	}
+//    	while(fastB != null && fastB.previous != null) {
+//    		if(slowB == fastB || slowB == fastB.previous) {
+//    			return true;
+//    		}
+//    		slowB = slowB.previous;
+//    		fastB = fastB.previous.previous;
+//    	}
+//    	return false;
+//    }
+    
+    public boolean hasCycle() {
+        if(start == null) {
+            return false;
+        }
+        SongNode temp = start;
+        while(temp != null) {
+            if(visitedNodes.containsKey(temp) || visitedNodesBackwards.containsKey(temp)) {
+                return true;
+            }
+            temp = temp.next;
+        }
+        return false;
     }
 
     /**
