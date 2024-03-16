@@ -1,6 +1,10 @@
 package questions;
 
 import doNotModify.Song;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import doNotModify.SongNode;
 
 public class PlayQueue {
@@ -25,6 +29,10 @@ public class PlayQueue {
         end = newNode;
         qLength++;
     }
+    /* Creates a new SongNode with the song passed into the function and a next and previous == null
+     * if start is empty, newNode becomes Start
+     * otherwise add newNode to the end of the queue and update end to be newNode
+     * increase queue length */
 
     /**
      * Remove the first SongNode with the parameter Song from the PlayQueue.
@@ -155,13 +163,61 @@ public class PlayQueue {
      * @param amount
      */
     public void moveSong(int fromIndex, int amount) {
-        if(fromIndex < 0 || fromIndex > qLength) {
-        	return;
-        }
-        if(amount < 0 || amount > qLength) {
+        if(fromIndex < 0 || fromIndex >= qLength) {
         	return;
         }
         
+        SongNode temp = start;
+        for(int i = 0; i < fromIndex; i++) {
+        	temp = temp.next;
+        }
+        
+        //This for handles the negative amount (it will move temp backwards)
+        for(int i = 0; i > amount; i--) {
+        	if(temp.previous == null) {
+        		break;
+        	}
+        	SongNode prev = temp.previous;
+        	//Change links to move temp in front of its previous node
+        	if(temp.next != null) {
+        		temp.next.previous = prev;
+        	} else {
+        		end = prev; //Update the end if temp is the new last node
+        	}
+        	prev.next = temp.next;
+        	temp.next = prev;
+        	temp.previous = prev.previous;
+        	prev.previous = temp;
+        	//Update start if temp was moved in front of it
+        	if(temp.previous == null) {
+        		start = temp;
+        	} else {
+        		temp.previous.next = temp;
+        	}
+        }
+        //This for handles amount when it is positive (it will move forwards)
+        for(int i = 0; i < amount; i++) {
+            if (temp.next == null) {
+                break; //Can't move further forwards
+            }
+            SongNode next = temp.next;
+            //Change the links to move temp after its next node
+            if(temp.previous != null) {
+                temp.previous.next = next;
+            } else {
+                start = next; //Update start if temp was moved in front of it
+            }
+            next.previous = temp.previous;
+            temp.previous = next;
+            temp.next = next.next;
+            next.next = temp;
+            //Update end if temp was moved after it
+            if(temp.next == null) {
+                end = temp;
+            } else {
+                temp.next.previous = temp;
+            }
+        }
     }
 
     /**
@@ -178,14 +234,43 @@ public class PlayQueue {
         for(int i = 0; i < firstIndex; i++) {
             temp = temp.next;
         }
-        Song firstSong = temp.song;
+        SongNode firstSong = temp;
         SongNode temp2 = start;
         for(int i = 0; i < secondIndex; i++) {
             temp2 = temp2.next;
         }
-        Song secondSong = temp2.song;
-        temp.song = secondSong;
-        temp2.song = firstSong;
+        SongNode secondSong = temp2;
+        SongNode tempPrev = firstSong.previous;
+        SongNode tempNext = firstSong.next;
+        
+        firstSong.previous = secondSong.previous;
+        firstSong.next = secondSong.next;
+        secondSong.previous = tempPrev;
+        secondSong.next = tempNext;
+        
+        if(firstSong.previous != null) {
+        	firstSong.previous.next = firstSong;
+        } else {
+        	start = firstSong;
+        }
+        
+        if(firstSong.next != null) {
+        	firstSong.next.previous = firstSong;
+        } else {
+        	end = firstSong;
+        }
+        
+        if(secondSong.previous != null) {
+        	secondSong.previous.next = secondSong;
+        } else {
+        	start = secondSong;
+        }
+        
+        if(secondSong.next != null) {
+        	secondSong.next.previous = secondSong;
+        } else {
+        	end = secondSong;
+        }
     }
 
     /**
@@ -194,8 +279,53 @@ public class PlayQueue {
      * There is at most one cycle in the PlayQueue. This may be bi-directional.
      * @return - true if a cycle is detected, false otherwise.
      */
-    public boolean hasCycle() {
-        return false;  // TODO: To be completed
+    
+//    public boolean hasCycle() { //MY FAVOURITE VERSION
+//    	if(start == null) {
+//    		return false;
+//    	}
+//    	HashSet<SongNode> visited = new HashSet<>();
+//    	HashSet<SongNode> visitedB = new HashSet<>();
+//    	SongNode current = start;
+//    	SongNode revCurrent = end;
+//    	while(current != null) {
+//    		if(!visited.add(current)) {
+//    			return true;
+//    		}
+//    		current = current.next;
+//    	}
+//    	while(revCurrent.previous != null) {
+//    		if(!visitedB.add(revCurrent)) {
+//    			return true;
+//    		}
+//    		revCurrent = revCurrent.previous;
+//    	}
+//    	return false;
+//    }
+    
+    public boolean hasCycle() { //THIS IS THE FASTEST VERSION, it currently does not pass the timed test 100% of the time
+    	if(start == null || end == null) {
+    		return false;
+    	}
+    	SongNode slow = start;
+    	SongNode fast = start.next;
+    	SongNode slowB = end;
+    	SongNode fastB = end.previous;
+    	while(fast != null && fast.next != null) {
+    		if(slow == fast || slow == fast.next) {
+    			return true;
+    		}
+    		slow = slow.next;
+    		fast = fast.next.next;
+    	}
+    	while(fastB != null && fastB.previous != null) {
+    		if(slowB == fastB || slowB == fastB.previous) {
+    			return true;
+    		}
+    		slowB = slowB.previous;
+    		fastB = fastB.previous.previous;
+    	}
+    	return false;
     }
 
     /**
