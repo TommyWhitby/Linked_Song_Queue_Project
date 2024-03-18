@@ -2,6 +2,8 @@ package questions;
 
 import doNotModify.Song;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import doNotModify.SongNode;
 
@@ -11,6 +13,8 @@ public class PlayQueue {
     public int qLength;
     public HashMap<SongNode, Boolean> visitedNodes;
     public HashMap<SongNode, Boolean> visitedNodesBackwards;
+    private static final int SMALL_QUEUE_THRESHOLD = 100000;
+    public int playQueueSize;
 
     /**
      * Constructor for PlayQueue class.
@@ -19,6 +23,7 @@ public class PlayQueue {
     public PlayQueue() {
         visitedNodes = new HashMap<>();
         visitedNodesBackwards = new HashMap<>();
+        playQueueSize = 0;
     }
     
     /**
@@ -37,22 +42,7 @@ public class PlayQueue {
         }
         end = newNode;
         qLength++;
-        
-        //This is for updating the forwards hashmap
-        SongNode tempNode = start;
-        visitedNodes.clear();
-        while(tempNode != null) {
-        	visitedNodes.put(tempNode, true);
-        	tempNode = tempNode.next;
-        }
-        
-        //This is for updating the backwards hashmap
-        SongNode tempNodeB = end;
-        visitedNodesBackwards.clear();
-        while(tempNodeB != null) {
-        	visitedNodes.put(tempNodeB, true);
-        	tempNodeB = tempNodeB.previous;
-        }
+        playQueueSize++;
     }
     
     /* Creates a new SongNode with the song passed into the function and a next and previous == null
@@ -120,22 +110,6 @@ public class PlayQueue {
     		prevNode.next = nextNode;
     	}
     	qLength--;
-
-        //This is for updating the forwards hashmap
-        SongNode tempNode = start;
-        visitedNodes.clear();
-        while(tempNode != null) {
-        	visitedNodes.put(tempNode, true);
-        	tempNode = tempNode.next;
-        }
-        
-        //This is for updating the backwards hashmap
-        SongNode tempNodeB = end;
-        visitedNodesBackwards.clear();
-        while(tempNodeB != null) {
-        	visitedNodes.put(tempNodeB, true);
-        	tempNodeB = tempNodeB.previous;
-        }
     	return temp.song;
     }
     
@@ -164,22 +138,6 @@ public class PlayQueue {
         SongNode temp = start;
         start = end;
         end = temp;
-
-        //This is for updating the forwards hashmap
-        SongNode tempNode = start;
-        visitedNodes.clear();
-        while(tempNode != null) {
-        	visitedNodes.put(tempNode, true);
-        	tempNode = tempNode.next;
-        }
-        
-        //This is for updating the backwards hashmap
-        SongNode tempNodeB = end;
-        visitedNodesBackwards.clear();
-        while(tempNodeB != null) {
-        	visitedNodes.put(tempNodeB, true);
-        	tempNodeB = tempNodeB.previous;
-        }
     }
     
 
@@ -276,22 +234,6 @@ public class PlayQueue {
                 temp.next.previous = temp;
             }
         }
-
-        //This is for updating the forwards hashmap
-        SongNode tempNode = start;
-        visitedNodes.clear();
-        while(tempNode != null) {
-        	visitedNodes.put(tempNode, true);
-        	tempNode = tempNode.next;
-        }
-        
-        //This is for updating the backwards hashmap
-        SongNode tempNodeB = end;
-        visitedNodesBackwards.clear();
-        while(tempNodeB != null) {
-        	visitedNodes.put(tempNodeB, true);
-        	tempNodeB = tempNodeB.previous;
-        }
     }
 
     /**
@@ -345,22 +287,6 @@ public class PlayQueue {
         } else {
         	end = secondSong;
         }
-
-        //This is for updating the forwards hashmap
-        SongNode tempNode = start;
-        visitedNodes.clear();
-        while(tempNode != null) {
-        	visitedNodes.put(tempNode, true);
-        	tempNode = tempNode.next;
-        }
-        
-        //This is for updating the backwards hashmap
-        SongNode tempNodeB = end;
-        visitedNodesBackwards.clear();
-        while(tempNodeB != null) {
-        	visitedNodes.put(tempNodeB, true);
-        	tempNodeB = tempNodeB.previous;
-        }
     }
 
     /**
@@ -370,21 +296,29 @@ public class PlayQueue {
      * @return - true if a cycle is detected, false otherwise.
      */
     
-//    public boolean hasCycle() { //MY FAVOURITE VERSION
-//    	if(start == null) {
+//    public boolean hasCycle9() { //MY FAVOURITE VERSION
+//    	if(start == null || end == null) {
 //    		return false;
 //    	}
 //    	HashSet<SongNode> visited = new HashSet<>();
 //    	HashSet<SongNode> visitedB = new HashSet<>();
+//    	
 //    	SongNode current = start;
 //    	SongNode revCurrent = end;
+//    	while(current != null && revCurrent != null) {
+//    		if(!visited.add(current) || !visitedB.add(revCurrent)) {
+//    			return true;
+//    		}
+//    		current = current.next;
+//    		revCurrent = revCurrent.previous;
+//    	}
 //    	while(current != null) {
 //    		if(!visited.add(current)) {
 //    			return true;
 //    		}
 //    		current = current.next;
 //    	}
-//    	while(revCurrent.previous != null) {
+//    	while(revCurrent != null) {
 //    		if(!visitedB.add(revCurrent)) {
 //    			return true;
 //    		}
@@ -393,7 +327,32 @@ public class PlayQueue {
 //    	return false;
 //    }
     
-//    public boolean hasCycle() { //THIS IS THE FASTEST VERSION, it currently does not pass the timed test 100% of the time
+    public boolean hasCycle() { //THIS IS THE FASTEST VERSION, it currently does not pass the timed test 100% of the time
+    	if(start == null || end == null) {
+    		return false;
+    	}
+    	SongNode slow = start;
+    	SongNode fast = start.next;
+    	SongNode slowB = end;
+    	SongNode fastB = end.previous;
+    	while(fast != null && fast.next != null) {
+    		if(slow == fast || slow == fast.next) {
+    			return true;
+    		}
+    		slow = slow.next;
+    		fast = fast.next.next;
+    	}
+    	while(fastB != null && fastB.previous != null) {
+    		if(slowB == fastB || slowB == fastB.previous) {
+    			return true;
+    		}
+    		slowB = slowB.previous;
+    		fastB = fastB.previous.previous;
+    	}
+    	return false;
+    }
+    
+//    public boolean hasCycle() {
 //    	if(start == null || end == null) {
 //    		return false;
 //    	}
@@ -401,36 +360,43 @@ public class PlayQueue {
 //    	SongNode fast = start.next;
 //    	SongNode slowB = end;
 //    	SongNode fastB = end.previous;
-//    	while(fast != null && fast.next != null) {
-//    		if(slow == fast || slow == fast.next) {
+//    	if(start.previous != null || end.next != null) {
+//    		return true;
+//    	}
+//    	while(fast != null && fast.next != null || fastB != null && fastB.previous != null) {
+//    		if(slow == fast || slow == fast.next || slowB == fastB || slowB == fastB.previous) {
 //    			return true;
 //    		}
 //    		slow = slow.next;
 //    		fast = fast.next.next;
-//    	}
-//    	while(fastB != null && fastB.previous != null) {
-//    		if(slowB == fastB || slowB == fastB.previous) {
-//    			return true;
-//    		}
 //    		slowB = slowB.previous;
 //    		fastB = fastB.previous.previous;
 //    	}
 //    	return false;
 //    }
     
-    public boolean hasCycle() {
-        if(start == null) {
-            return false;
-        }
-        SongNode temp = start;
-        while(temp != null) {
-            if(visitedNodes.containsKey(temp) || visitedNodesBackwards.containsKey(temp)) {
-                return true;
-            }
-            temp = temp.next;
-        }
-        return false;
-    }
+//    private boolean hasCycleComplex() {
+//    	if(start == null) {
+//    		return false;
+//    	}
+//    	HashMap<SongNode, Boolean> visited = new HashMap<>();
+//    	HashMap<SongNode, Boolean> visitedB = new HashMap<>();
+//    	SongNode current = start;
+//    	SongNode revCurrent = end;
+//    	while(current != null) {
+//    		if(visited.containsKey(current)) {
+//    			return true;
+//    		}
+//    		current = current.next;
+//    	}
+//    	while(revCurrent.previous != null) {
+//    		if(visitedB.containsKey(revCurrent)) {
+//    			return true;
+//    		}
+//    		revCurrent = revCurrent.previous;
+//    	}
+//    	return false;
+//    }
 
     /**
      * Create and return a (semi) randomly shuffled PlayQueue from the calling object.
@@ -457,43 +423,10 @@ public class PlayQueue {
      * @return the shuffled queue
      */
     public PlayQueue shuffledQueue(int p, int s) {
-        PlayQueue shuffledQ = new PlayQueue();
-        shuffledQ.start = start;
-        shuffledQ.end = end;
-        
-        SongNode current = start;
-        SongNode shuffledCurrent= shuffledQ.start;
-        int index = 0;
-        if(current == null) {
-        	return shuffledQ;
-        }
-        while(current.next != null && shuffledCurrent.next != null) {
-        	int newIndex = (index ^ 2 + 1) % p * s % qLength;
-        	if(newIndex < 0) {
-        		newIndex += qLength;
-        	}
-        	SongNode newNode = getNodeAtIndex(newIndex);
-        	if(visitedNodes.containsKey(newNode) || visitedNodesBackwards.containsKey(newNode)) {
-        		break;
-        	}
-        	SongNode newShuffledNode = new SongNode(newNode.song, null, null);
-        	shuffledCurrent.next = newShuffledNode;
-        	shuffledCurrent = newShuffledNode;
-        	current = current.next;
-        	index++;
-        }
-        shuffledCurrent.next = current.next;
-        return shuffledQ;
-    }
-    
-    private SongNode getNodeAtIndex(int index) {
-    	SongNode current = start;
-    	int i = 0;
-    	while(current != null && i < index) {
-    		current = current.next;
-    		i++;
-    	}
-    	return current;
+//        PlayQueue shuffledQ = new PlayQueue();
+//        shuffledQ.start = start;
+//        shuffledQ.end = end;
+    	return null; // current;
     }
 
 
