@@ -349,35 +349,25 @@ public class PlayQueue {
     	PlayQueue shuffledQueue = new PlayQueue();
     	shuffledQueue.addSong(start.song);
     	
-    	SongNode current = start;
-    	int index = 0;
-    	
-    	while(current != null) {
-    		index = ((index * index) + 1) % p * s % qLength;
-    		
-    		if(index < 0) {
-    			index += qLength;
-    		}
-    		
-    		for(int i = 0; i < index; i++) {
-                if(current.next != null) {
-                    current = current.next;
-                } else {
-                    current = start;
-                }
-            }
-    		
-    		shuffledQueue.addSong(current.song);
-    		
-    		if(shuffledQueue.size() == 0) {
-    			return shuffledQueue;
-    		}
-    		
-    		if(shuffledQueue.size() == qLength) {
-    			break;
-    		}
-//    		index++;
+    	if(qLength == 1) {
+    		return shuffledQueue;
     	}
+    	
+    	Song[] songArray = new Song[qLength];
+    	
+    	SongNode temp = start.next;
+    	for(int i = 0; i < qLength - 1; i++) {
+    		songArray[i] = temp.song;
+    		temp = temp.next;
+    	}
+    	
+    	int index = 1;
+    	while(index < qLength) {
+    		int shuffledIndex = (index * index + 1) % p * s % qLength;
+    		shuffledQueue.addSong(songArray[shuffledIndex]);
+    		index++;
+    	}
+    	
     	return shuffledQueue;
     }
 
