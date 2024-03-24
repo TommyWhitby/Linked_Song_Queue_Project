@@ -11,19 +11,13 @@ public class PlayQueue {
     public SongNode start; // DO NOT MODIFY
     public SongNode end;   // DO NOT MODIFY
     public int qLength;
-    public HashMap<SongNode, Boolean> visitedNodes;
-    public HashMap<SongNode, Boolean> visitedNodesBackwards;
-    private static final int SMALL_QUEUE_THRESHOLD = 100000;
-    public int playQueueSize;
-
+    
     /**
      * Constructor for PlayQueue class.
      * Initializes the PlayQueue.
      */
     public PlayQueue() {
-        visitedNodes = new HashMap<>();
-        visitedNodesBackwards = new HashMap<>();
-        playQueueSize = 0;
+        
     }
     
     /**
@@ -42,7 +36,6 @@ public class PlayQueue {
         }
         end = newNode;
         qLength++;
-        playQueueSize++;
     }
     
     /* Creates a new SongNode with the song passed into the function and a next and previous == null
@@ -118,6 +111,9 @@ public class PlayQueue {
      * @return the size of the PlayQueue
      */
     public int size() {
+    	if(start == null) {
+    		return 0;
+    	}
     	return qLength;
     }
 
@@ -296,37 +292,6 @@ public class PlayQueue {
      * @return - true if a cycle is detected, false otherwise.
      */
     
-//    public boolean hasCycle9() { //MY FAVOURITE VERSION
-//    	if(start == null || end == null) {
-//    		return false;
-//    	}
-//    	HashSet<SongNode> visited = new HashSet<>();
-//    	HashSet<SongNode> visitedB = new HashSet<>();
-//    	
-//    	SongNode current = start;
-//    	SongNode revCurrent = end;
-//    	while(current != null && revCurrent != null) {
-//    		if(!visited.add(current) || !visitedB.add(revCurrent)) {
-//    			return true;
-//    		}
-//    		current = current.next;
-//    		revCurrent = revCurrent.previous;
-//    	}
-//    	while(current != null) {
-//    		if(!visited.add(current)) {
-//    			return true;
-//    		}
-//    		current = current.next;
-//    	}
-//    	while(revCurrent != null) {
-//    		if(!visitedB.add(revCurrent)) {
-//    			return true;
-//    		}
-//    		revCurrent = revCurrent.previous;
-//    	}
-//    	return false;
-//    }
-    
     public boolean hasCycle() { //THIS IS THE FASTEST VERSION, it currently does not pass the timed test 100% of the time
     	if(start == null || end == null) {
     		return false;
@@ -351,52 +316,6 @@ public class PlayQueue {
     	}
     	return false;
     }
-    
-//    public boolean hasCycle() {
-//    	if(start == null || end == null) {
-//    		return false;
-//    	}
-//    	SongNode slow = start;
-//    	SongNode fast = start.next;
-//    	SongNode slowB = end;
-//    	SongNode fastB = end.previous;
-//    	if(start.previous != null || end.next != null) {
-//    		return true;
-//    	}
-//    	while(fast != null && fast.next != null || fastB != null && fastB.previous != null) {
-//    		if(slow == fast || slow == fast.next || slowB == fastB || slowB == fastB.previous) {
-//    			return true;
-//    		}
-//    		slow = slow.next;
-//    		fast = fast.next.next;
-//    		slowB = slowB.previous;
-//    		fastB = fastB.previous.previous;
-//    	}
-//    	return false;
-//    }
-    
-//    private boolean hasCycleComplex() {
-//    	if(start == null) {
-//    		return false;
-//    	}
-//    	HashMap<SongNode, Boolean> visited = new HashMap<>();
-//    	HashMap<SongNode, Boolean> visitedB = new HashMap<>();
-//    	SongNode current = start;
-//    	SongNode revCurrent = end;
-//    	while(current != null) {
-//    		if(visited.containsKey(current)) {
-//    			return true;
-//    		}
-//    		current = current.next;
-//    	}
-//    	while(revCurrent.previous != null) {
-//    		if(visitedB.containsKey(revCurrent)) {
-//    			return true;
-//    		}
-//    		revCurrent = revCurrent.previous;
-//    	}
-//    	return false;
-//    }
 
     /**
      * Create and return a (semi) randomly shuffled PlayQueue from the calling object.
@@ -423,12 +342,44 @@ public class PlayQueue {
      * @return the shuffled queue
      */
     public PlayQueue shuffledQueue(int p, int s) {
-//        PlayQueue shuffledQ = new PlayQueue();
-//        shuffledQ.start = start;
-//        shuffledQ.end = end;
-    	return null; // current;
+    	if(start == null) {
+    		return new PlayQueue();
+    	}
+    	
+    	PlayQueue shuffledQueue = new PlayQueue();
+    	shuffledQueue.addSong(start.song);
+    	
+    	SongNode current = start;
+    	int index = 0;
+    	
+    	while(current != null) {
+    		index = ((index * index) + 1) % p * s % qLength;
+    		
+    		if(index < 0) {
+    			index += qLength;
+    		}
+    		
+    		for(int i = 0; i < index; i++) {
+                if(current.next != null) {
+                    current = current.next;
+                } else {
+                    current = start;
+                }
+            }
+    		
+    		shuffledQueue.addSong(current.song);
+    		
+    		if(shuffledQueue.size() == 0) {
+    			return shuffledQueue;
+    		}
+    		
+    		if(shuffledQueue.size() == qLength) {
+    			break;
+    		}
+//    		index++;
+    	}
+    	return shuffledQueue;
     }
-
 
     @Override
     public String toString() {
