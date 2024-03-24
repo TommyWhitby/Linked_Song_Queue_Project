@@ -1,9 +1,6 @@
 package questions;
 
 import doNotModify.Song;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import doNotModify.SongNode;
 
@@ -292,27 +289,40 @@ public class PlayQueue {
      * @return - true if a cycle is detected, false otherwise.
      */
     
-    public boolean hasCycle() { //THIS IS THE FASTEST VERSION, it currently does not pass the timed test 100% of the time
+    public boolean hasCycle() {
     	if(start == null || end == null) {
     		return false;
     	}
+    	
     	SongNode slow = start;
     	SongNode fast = start.next;
+    	int forwardLength = 0;
+    	
     	SongNode slowB = end;
     	SongNode fastB = end.previous;
+    	int backwardLength = 0;
+    	
     	while(fast != null && fast.next != null) {
+    		if(forwardLength > qLength) {
+    			return true;
+    		}
     		if(slow == fast || slow == fast.next) {
     			return true;
     		}
     		slow = slow.next;
     		fast = fast.next.next;
+    		forwardLength++;
     	}
     	while(fastB != null && fastB.previous != null) {
+    		if(backwardLength > qLength) {
+    			return true;
+    		}
     		if(slowB == fastB || slowB == fastB.previous) {
     			return true;
     		}
     		slowB = slowB.previous;
     		fastB = fastB.previous.previous;
+    		backwardLength++;
     	}
     	return false;
     }
@@ -348,6 +358,7 @@ public class PlayQueue {
     	
     	PlayQueue shuffledQueue = new PlayQueue();
     	shuffledQueue.addSong(start.song);
+    	shuffledQueue.start = start;
     	
     	if(qLength == 1) {
     		return shuffledQueue;
@@ -363,12 +374,17 @@ public class PlayQueue {
     	
     	int index = 1;
     	while(index < qLength) {
-    		int shuffledIndex = (index * index + 1) % p * s % qLength;
-    		shuffledQueue.addSong(songArray[shuffledIndex]);
+    		shuffledQueue.addSong(songArray[shuffledIndex(index, p, s)]);
     		index++;
+    		System.out.println(songArray[shuffledIndex(index, p, s)].title);
     	}
     	
     	return shuffledQueue;
+    }
+    
+    public int shuffledIndex(int index, int p, int s) {
+    	int result = (index * index + 1) % p * s % qLength;
+    	return result;
     }
 
     @Override
