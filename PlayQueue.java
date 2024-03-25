@@ -10,14 +10,6 @@ public class PlayQueue {
     public int qLength;
     
     /**
-     * Constructor for PlayQueue class.
-     * Initializes the PlayQueue.
-     */
-    public PlayQueue() {
-        
-    }
-    
-    /**
      * Adds a Song to the end of the PlayQueue.
      * <p>
      * Note: This must be completed before moving onto any other method.
@@ -357,34 +349,36 @@ public class PlayQueue {
     	}
     	
     	PlayQueue shuffledQueue = new PlayQueue();
-    	shuffledQueue.addSong(start.song);
-    	shuffledQueue.start = start;
     	
-    	if(qLength == 1) {
-    		return shuffledQueue;
-    	}
-    	
-    	Song[] songArray = new Song[qLength];
-    	
-    	SongNode temp = start.next;
-    	for(int i = 0; i < qLength - 1; i++) {
-    		songArray[i] = temp.song;
+    	Song[] ogQueue = new Song[qLength];
+    	SongNode temp = start;
+    	for(int i = 0; i < qLength; i++) {
+    		ogQueue[i] = temp.song;
     		temp = temp.next;
     	}
     	
-    	int index = 1;
-    	while(index < qLength) {
-    		shuffledQueue.addSong(songArray[shuffledIndex(index, p, s)]);
-    		index++;
-    		System.out.println(songArray[shuffledIndex(index, p, s)].title);
+    	for(int i = 1; i < qLength; i++) {
+    		System.out.println(ogQueue[i].title + " ------------------[" + i + "]");
     	}
     	
-    	return shuffledQueue;
+    	int index = 0;
+    	for(int i = 1; i < qLength; i++) {
+    		int shuffleIndex = ((index * index) + 1) % p * s % qLength;
+    		Song tempSong = ogQueue[i];
+    		ogQueue[i] = ogQueue[shuffleIndex];
+    		ogQueue[shuffleIndex] = tempSong;
+    		index = shuffleIndex;
+    	}
+    	return addShuffled(shuffledQueue, ogQueue);
     }
     
-    public int shuffledIndex(int index, int p, int s) {
-    	int result = (index * index + 1) % p * s % qLength;
-    	return result;
+    public PlayQueue addShuffled(PlayQueue shuffledQueue, Song[] arr) {
+    	shuffledQueue.addSong(arr[0]);
+    	for(int i = 1; i < qLength; i++) {
+    		shuffledQueue.addSong(arr[i]);
+    		System.out.println(arr[i].title + " addShuffled[" + i + "]");
+    	}
+    	return shuffledQueue;
     }
 
     @Override
