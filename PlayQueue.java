@@ -347,34 +347,36 @@ public class PlayQueue {
     	if(start == null) {
     		return new PlayQueue();
     	}
+    	System.out.println("------------------New Queue----------------");
     	
-    	PlayQueue shuffledQueue = new PlayQueue();
+    	for(SongNode temp = start; temp != null; temp = temp.next) {
+    		System.out.println(temp.song.title + " THIS IS THE ORIGINAL QUEUE");
+    	}
     	
     	Song[] ogQueue = new Song[qLength];
     	SongNode temp = start;
     	for(int i = 0; i < qLength; i++) {
     		ogQueue[i] = temp.song;
     		temp = temp.next;
+    		System.out.println(ogQueue[i].title + " -------------checking [" + i + "]");
     	}
     	
-    	for(int i = 1; i < qLength; i++) {
-    		System.out.println(ogQueue[i].title + " ------------------[" + i + "]");
-    	}
+    	Song[] shuffledQueueArr = new Song[qLength];
+    	shuffledQueueArr[0] = ogQueue[0];
     	
     	int index = 0;
     	for(int i = 1; i < qLength; i++) {
     		int shuffleIndex = ((index * index) + 1) % p * s % qLength;
-    		Song tempSong = ogQueue[i];
-    		ogQueue[i] = ogQueue[shuffleIndex];
-    		ogQueue[shuffleIndex] = tempSong;
+    		shuffledQueueArr[i] = ogQueue[shuffleIndex];
     		index = shuffleIndex;
     	}
-    	return addShuffled(shuffledQueue, ogQueue);
+    	
+    	return addShuffled(shuffledQueueArr);
     }
     
-    public PlayQueue addShuffled(PlayQueue shuffledQueue, Song[] arr) {
-    	shuffledQueue.addSong(arr[0]);
-    	for(int i = 1; i < qLength; i++) {
+    public PlayQueue addShuffled(Song[] arr) {
+    	PlayQueue shuffledQueue = new PlayQueue();
+    	for(int i = 0; i < qLength; i++) {
     		shuffledQueue.addSong(arr[i]);
     		System.out.println(arr[i].title + " addShuffled[" + i + "]");
     	}
