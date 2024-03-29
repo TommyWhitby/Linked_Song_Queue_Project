@@ -1,9 +1,6 @@
 package questions;
-
 import doNotModify.Song;
-
 import doNotModify.SongNode;
-
 public class PlayQueue {
     public SongNode start; // DO NOT MODIFY
     public SongNode end;   // DO NOT MODIFY
@@ -31,7 +28,6 @@ public class PlayQueue {
      * if start is empty, newNode becomes Start
      * otherwise add newNode to the end of the queue and update end to be newNode
      * increase queue length */
-
     /**
      * Remove the first SongNode with the parameter Song from the PlayQueue.
      * <p>
@@ -58,7 +54,6 @@ public class PlayQueue {
         removeSong(i);
         return true;
     }
-
     /**
      * Removes the SongNode at the specified index from the PlayQueue, returning
      * the Song that was removed.
@@ -105,7 +100,6 @@ public class PlayQueue {
     	}
     	return qLength;
     }
-
     /**
      * Reverse the calling object PlayQueues Song ordering.
      */
@@ -125,7 +119,6 @@ public class PlayQueue {
         end = temp;
     }
     
-
     /**
      * Move the SongNode from the `fromIndex` index the specified `amount`.
      * 
@@ -220,7 +213,6 @@ public class PlayQueue {
             }
         }
     }
-
     /**
      * Swap the SongNodes at parameter indices.
      * Do nothing if either parameters are invalid.
@@ -273,7 +265,6 @@ public class PlayQueue {
         	end = secondSong;
         }
     }
-
     /**
      * Check the PlayQueue for cycles.
      * <p>
@@ -318,7 +309,6 @@ public class PlayQueue {
     	}
     	return false;
     }
-
     /**
      * Create and return a (semi) randomly shuffled PlayQueue from the calling object.
      * <p>
@@ -357,11 +347,6 @@ public class PlayQueue {
     		System.out.println(ogQueue[i].title + " -------------checking original queue in array form [" + i + "]");
     	}
     	
-    	Song[] queueArr = new Song[qLength];
-    	for(int i = 0; i < qLength; i++) {
-    		queueArr[i] = null;
-    	}
-    	
     	Song[] shuffledQueueArr = new Song[qLength];
     	shuffledQueueArr[0] = ogQueue[0];
     	
@@ -369,44 +354,29 @@ public class PlayQueue {
     	int indice = 0;
     	boolean[] visited = new boolean[qLength];
     	
-    	System.out.println("In 'shuffleIndex' for-loop [" + queueArr[0].title + "]");
     	for(int i = 1; i < qLength; i++) {
-    		int shuffleIndex = ((index * index) + 1) % p * s % qLength;
-    		if(visited[shuffleIndex]) {
-    			System.out.println("------------Code is breaking from loop-----------");
-    			for(int o = 0; o < indice; o++) {
-    				shuffledQueueArr[o] = queueArr[o];
-    			}
-    			int counter = 0;
-    			for(; indice < qLength; indice++) {
-    				if(ogQueue[counter] == null) {
-    					counter++;
-    				}
-    				shuffledQueueArr[indice] = ogQueue[counter]; //fix this part
-    			}
-    			break;
-    		}
-    		visited[shuffleIndex] = true;
-    		Song swap = queueArr[i];
-    		queueArr[i] = ogQueue[shuffleIndex];
-    		ogQueue[shuffleIndex] = swap;
-    		index = shuffleIndex;
-    		indice++;
-    		System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[i].title + "]");
+    	    int shuffleIndex = ((index * index) + 1) % p * s % qLength;
+    	    if(visited[shuffleIndex]) {
+    	        System.out.println("------------Code is breaking from loop-----------");
+    	        for(; i < qLength; i++) {
+    	        	System.out.println("This is the amount of i = [" + i + "]");
+    	            if(!visited[indice]) {
+    	                shuffledQueueArr[i] = ogQueue[indice];
+    	                System.out.println("Adding uncovered song to shuffledQueueArr: " + shuffledQueueArr[i].title);
+    	            	System.out.println("This is the ogQueue song that will be put into shuffledQUeue " + ogQueue[indice].title);
+    	            }
+    	            indice++;
+    	        }
+    	        break;
+    	    }
+    	    visited[shuffleIndex] = true;
+    	    shuffledQueueArr[i] = ogQueue[shuffleIndex];
+    	    index = shuffleIndex;
+    	    indice++;
+    	    System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[i].title + "]");
     	}
-    	
-    	System.out.println(indice + "INDICE AMOUNT after shuffleIndex Loop");
-    	
-    	System.out.println("[" + shuffledQueueArr.length + "]");
     	return addShuffled(shuffledQueueArr);
     }
-    
-//    for(; i < qLength; i++) {
-//		if(!visited[indice]) {
-//			shuffledQueueArr[i] = ogQueue[i];
-//			System.out.println("Adding uncovered song to shuffledQueueArr: " + shuffledQueueArr[i].title);
-//		}
-//	}
     
     public PlayQueue addShuffled(Song[] arr) {
     	PlayQueue shuffledQueue = new PlayQueue();
@@ -416,7 +386,7 @@ public class PlayQueue {
     	}
     	return shuffledQueue;
     }
-
+    
     @Override
     public String toString() {
         if (start == null) {
@@ -429,7 +399,6 @@ public class PlayQueue {
             temp = temp.next;
         }
         forward += temp.song.title + " -> null";
-
         temp = end;
         String backward = "";
         while (temp.previous != null) {
