@@ -357,6 +357,11 @@ public class PlayQueue {
     		System.out.println(ogQueue[i].title + " -------------checking original queue in array form [" + i + "]");
     	}
     	
+    	Song[] queueArr = new Song[qLength];
+    	for(int i = 0; i < qLength; i++) {
+    		queueArr[i] = null;
+    	}
+    	
     	Song[] shuffledQueueArr = new Song[qLength];
     	shuffledQueueArr[0] = ogQueue[0];
     	
@@ -364,21 +369,27 @@ public class PlayQueue {
     	int indice = 0;
     	boolean[] visited = new boolean[qLength];
     	
-    	System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[0].title + "]");
+    	System.out.println("In 'shuffleIndex' for-loop [" + queueArr[0].title + "]");
     	for(int i = 1; i < qLength; i++) {
     		int shuffleIndex = ((index * index) + 1) % p * s % qLength;
     		if(visited[shuffleIndex]) {
     			System.out.println("------------Code is breaking from loop-----------");
-    			for(; i < qLength; i++) {
-    	    		if(!visited[indice]) {
-    	    			shuffledQueueArr[i] = ogQueue[i];
-    	    			System.out.println("Adding uncovered song to shuffledQueueArr: " + shuffledQueueArr[i].title);
-    	    		}
-    	    	}
+    			for(int o = 0; o < indice; o++) {
+    				shuffledQueueArr[o] = queueArr[o];
+    			}
+    			int counter = 0;
+    			for(; indice < qLength; indice++) {
+    				if(ogQueue[counter] == null) {
+    					counter++;
+    				}
+    				shuffledQueueArr[indice] = ogQueue[counter]; //fix this part
+    			}
     			break;
     		}
     		visited[shuffleIndex] = true;
-    		shuffledQueueArr[i] = ogQueue[shuffleIndex];
+    		Song swap = queueArr[i];
+    		queueArr[i] = ogQueue[shuffleIndex];
+    		ogQueue[shuffleIndex] = swap;
     		index = shuffleIndex;
     		indice++;
     		System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[i].title + "]");
@@ -389,6 +400,13 @@ public class PlayQueue {
     	System.out.println("[" + shuffledQueueArr.length + "]");
     	return addShuffled(shuffledQueueArr);
     }
+    
+//    for(; i < qLength; i++) {
+//		if(!visited[indice]) {
+//			shuffledQueueArr[i] = ogQueue[i];
+//			System.out.println("Adding uncovered song to shuffledQueueArr: " + shuffledQueueArr[i].title);
+//		}
+//	}
     
     public PlayQueue addShuffled(Song[] arr) {
     	PlayQueue shuffledQueue = new PlayQueue();
