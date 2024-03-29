@@ -349,28 +349,45 @@ public class PlayQueue {
     	}
     	System.out.println("------------------New Queue----------------");
     	
-    	for(SongNode temp = start; temp != null; temp = temp.next) {
-    		System.out.println(temp.song.title + " THIS IS THE ORIGINAL QUEUE");
-    	}
-    	
     	Song[] ogQueue = new Song[qLength];
     	SongNode temp = start;
     	for(int i = 0; i < qLength; i++) {
     		ogQueue[i] = temp.song;
     		temp = temp.next;
-    		System.out.println(ogQueue[i].title + " -------------checking [" + i + "]");
+    		System.out.println(ogQueue[i].title + " -------------checking original queue in array form [" + i + "]");
     	}
     	
     	Song[] shuffledQueueArr = new Song[qLength];
     	shuffledQueueArr[0] = ogQueue[0];
     	
     	int index = 0;
+    	int indice = 0;
+    	boolean[] visited = new boolean[qLength];
+    	
+    	System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[0].title + "]");
     	for(int i = 1; i < qLength; i++) {
     		int shuffleIndex = ((index * index) + 1) % p * s % qLength;
+    		if(visited[shuffleIndex]) {
+    			System.out.println("------------Code is breaking from loop-----------");
+    			for(; i < qLength; i++) {
+    	    		if(!visited[indice]) {
+    	    			shuffledQueueArr[i] = ogQueue[i];
+    	    			System.out.println("Adding uncovered song to shuffledQueueArr: " + shuffledQueueArr[i].title);
+    	    		}
+    	    	}
+    			break;
+    		}
+    		visited[shuffleIndex] = true;
     		shuffledQueueArr[i] = ogQueue[shuffleIndex];
     		index = shuffleIndex;
+    		indice++;
+    		//System.out.println(indice + " INDICE AMOUNT in shuffleIndex Loop");
+    		System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[i].title + "]");
     	}
     	
+    	System.out.println(indice + "INDICE AMOUNT after shuffleIndex Loop");
+    	
+    	System.out.println("[" + shuffledQueueArr.length + "]");
     	return addShuffled(shuffledQueueArr);
     }
     
@@ -378,7 +395,7 @@ public class PlayQueue {
     	PlayQueue shuffledQueue = new PlayQueue();
     	for(int i = 0; i < qLength; i++) {
     		shuffledQueue.addSong(arr[i]);
-    		System.out.println(arr[i].title + " addShuffled[" + i + "]");
+    		System.out.println("addShuffled  [" + i + "]  " + arr[i].title);
     	}
     	return shuffledQueue;
     }
