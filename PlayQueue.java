@@ -381,7 +381,6 @@ public class PlayQueue {
     		shuffledQueueArr[i] = ogQueue[shuffleIndex];
     		index = shuffleIndex;
     		indice++;
-    		//System.out.println(indice + " INDICE AMOUNT in shuffleIndex Loop");
     		System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[i].title + "]");
     	}
     	
