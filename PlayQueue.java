@@ -356,24 +356,39 @@ public class PlayQueue {
     	
     	for(int i = 1; i < qLength; i++) {
     	    int shuffleIndex = ((index * index) + 1) % p * s % qLength;
+    	    System.out.println("This is the value of shuffleIndex [" + shuffleIndex + "]");
     	    if(visited[shuffleIndex]) {
     	        System.out.println("------------Code is breaking from loop-----------");
     	        for(; i < qLength; i++) {
     	        	System.out.println("This is the amount of i = [" + i + "]");
-    	            if(!visited[indice]) {
-    	                shuffledQueueArr[i] = ogQueue[indice];
+    	            if(visited[indice]) {
+    	            	System.out.println("---------------visited[indice] IS TRUE--------------");
+    	            	System.out.println("[" + indice + "] value of indice before indice++");
+    	            	System.out.println("ogQueue[indice] = " + ogQueue[indice].title + " | we don't want this so we indice++");
+    	            	indice++;
+    	            	shuffledQueueArr[i] = ogQueue[indice];
+    	            	System.out.println("[" + shuffledQueueArr[i].title + "] added this to shuffledQueueArr");
+    	            	System.out.println("[" + indice + "] value of indice");
+    	            	System.out.println("--------------------");
+    	            	indice++;
+    	            } else {
+    	            	System.out.println("ogQueue[indice] = " + ogQueue[indice].title);
+    	            	shuffledQueueArr[i] = ogQueue[indice];
     	                System.out.println("Adding uncovered song to shuffledQueueArr: " + shuffledQueueArr[i].title);
-    	            	System.out.println("This is the ogQueue song that will be put into shuffledQUeue " + ogQueue[indice].title);
+    	                System.out.println("[" + indice + "] value of indice before indice++ in else");
+    	                indice++;
+    	            	System.out.println("[" + indice + "] value of indice in the else");
+    	            	System.out.println("--------------------");
     	            }
-    	            indice++;
     	        }
     	        break;
     	    }
     	    visited[shuffleIndex] = true;
+    	    System.out.println("--visited[shuffleIndex] is now true for " + ogQueue[shuffleIndex].title);
     	    shuffledQueueArr[i] = ogQueue[shuffleIndex];
     	    index = shuffleIndex;
     	    indice++;
-    	    System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[i].title + "]");
+    	    System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[i].title + "] added in element [" + (i) + "]");
     	}
     	return addShuffled(shuffledQueueArr);
     }
