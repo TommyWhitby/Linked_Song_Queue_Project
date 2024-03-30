@@ -334,72 +334,65 @@ public class PlayQueue {
      * @return the shuffled queue
      */
     public PlayQueue shuffledQueue(int p, int s) {
-    	if(start == null) {
-    		return new PlayQueue();
-    	}
-    	System.out.println("------------------New Queue----------------");
-    	
-    	Song[] ogQueue = new Song[qLength];
-    	SongNode temp = start;
-    	for(int i = 0; i < qLength; i++) {
-    		ogQueue[i] = temp.song;
-    		temp = temp.next;
-    		System.out.println(ogQueue[i].title + " -------------checking original queue in array form [" + i + "]");
-    	}
-    	
-    	Song[] shuffledQueueArr = new Song[qLength];
-    	shuffledQueueArr[0] = ogQueue[0];
-    	
-    	int index = 0;
-    	int indice = 0;
-    	boolean[] visited = new boolean[qLength];
-    	
-    	for(int i = 1; i < qLength; i++) {
-    	    int shuffleIndex = ((index * index) + 1) % p * s % qLength;
-    	    System.out.println("This is the value of shuffleIndex [" + shuffleIndex + "]");
-    	    if(visited[shuffleIndex]) {
-    	        System.out.println("------------Code is breaking from loop-----------");
-    	        for(; i < qLength; i++) {
-    	        	System.out.println("This is the amount of i = [" + i + "]");
-    	            if(visited[indice]) {
-    	            	System.out.println("---------------visited[indice] IS TRUE--------------");
-    	            	System.out.println("[" + indice + "] value of indice before indice++");
-    	            	System.out.println("ogQueue[indice] = " + ogQueue[indice].title + " | we don't want this so we indice++");
-    	            	indice++;
-    	            	shuffledQueueArr[i] = ogQueue[indice];
-    	            	System.out.println("[" + shuffledQueueArr[i].title + "] added this to shuffledQueueArr");
-    	            	System.out.println("[" + indice + "] value of indice");
-    	            	System.out.println("--------------------");
-    	            	indice++;
-    	            } else {
-    	            	System.out.println("ogQueue[indice] = " + ogQueue[indice].title);
-    	            	shuffledQueueArr[i] = ogQueue[indice];
-    	                System.out.println("Adding uncovered song to shuffledQueueArr: " + shuffledQueueArr[i].title);
-    	                System.out.println("[" + indice + "] value of indice before indice++ in else");
-    	                indice++;
-    	            	System.out.println("[" + indice + "] value of indice in the else");
-    	            	System.out.println("--------------------");
-    	            }
-    	        }
-    	        break;
-    	    }
-    	    visited[shuffleIndex] = true;
-    	    System.out.println("--visited[shuffleIndex] is now true for " + ogQueue[shuffleIndex].title);
-    	    shuffledQueueArr[i] = ogQueue[shuffleIndex];
-    	    index = shuffleIndex;
-    	    indice++;
-    	    System.out.println("In 'shuffleIndex' for-loop [" + shuffledQueueArr[i].title + "] added in element [" + (i) + "]");
-    	}
-    	return addShuffled(shuffledQueueArr);
-    }
-    
-    public PlayQueue addShuffled(Song[] arr) {
-    	PlayQueue shuffledQueue = new PlayQueue();
-    	for(int i = 0; i < qLength; i++) {
-    		shuffledQueue.addSong(arr[i]);
-    		System.out.println("addShuffled  [" + i + "]  " + arr[i].title);
-    	}
-    	return shuffledQueue;
+        if(start == null) {
+            return new PlayQueue();
+        }
+        boolean loop = false;
+        int[] newOrder = new int[qLength];
+        // Start preserved
+        newOrder[0] = 0;
+        // Init because of trust issues
+        for(int i = 1; i < qLength; i++) { 
+            newOrder[i] = -1;
+        }
+        // Generate random song indexes
+        for(int i = 1; i < qLength; i++) {
+            int newIdx = (newOrder[i-1]*newOrder[i-1] + 1) % p * s % qLength;
+            // Check if random idx generates a loop
+            for(int j = 0; j < i; j++) {
+                if(newOrder[j] == newIdx) {
+                    loop = true;
+                    break;
+                }
+            }
+            if(loop) {
+                break;
+            }
+            newOrder[i] = newIdx;
+        }
+        // Populating remaining (if any left) with left over songs
+        boolean found;
+        for(int i = 0; i < qLength; i++) {
+            // Check if number was already randomly generated
+            found = false;
+            for(int j = 0; j < qLength; j++) {
+                if(i == newOrder[j]) {
+                    found = true;
+                    break;
+                }
+            }
+            if(found) {
+                continue;
+            }
+            // Number not randomly generated yet - insert at earliest empty slot
+            for(int j = 0; j < qLength; j++) {
+                if(newOrder[j] == -1) {
+                    newOrder[j] = i;
+                    break;
+                }
+            }
+        }
+        PlayQueue newQueue = new PlayQueue();
+        for(int idx : newOrder) {
+            SongNode temp = start;
+            int k = 0;
+            while(k < idx) {
+                temp = temp.next;
+                k++;
+            }
+            newQueue.addSong(temp.song);
+        }
+        return newQueue;
     }
     
     @Override
