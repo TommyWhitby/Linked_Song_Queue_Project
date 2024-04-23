@@ -1,0 +1,20 @@
+
+The PlayQueue class manages a queue of songs in a music player application. It provides methods for adding, removing, and manipulating songs within the queue.
+
+The addSong method adds a new song to the end of the queue, demonstrating basic queue manipulation skills.
+
+The removeSong methods allow for the removal of a song either by specifying the song itself or by index, showcasing searching and deletion operations within a linked list.
+
+The size method returns the number of songs currently in the queue, demonstrating knowledge of linked list traversal.
+
+The reverseQueue method reverses the order of songs in the queue, showcasing proficiency in linked list manipulation.
+
+The moveSong method moves a song within the queue by a specified amount, illustrating skills in repositioning nodes within a linked list.
+
+The swapSongs method swaps the positions of two songs in the queue, demonstrating proficiency in node manipulation.
+
+The hasCycle method checks for cycles within the queue, showcasing understanding of linked list cycle detection algorithms.
+
+The shuffledQueue method creates a randomly shuffled version of the queue, using a formula to determine the new order while avoiding cycles, demonstrating proficiency in algorithm design and implementation.
+
+This project demonstrates proficiency in data structure manipulation, algorithm design, and object-oriented programming principles.
