@@ -1,20 +1,46 @@
+PlayQueue
 
-The PlayQueue class manages a queue of songs in a music player application. It provides methods for adding, removing, and manipulating songs within the queue.
+Overview
+The PlayQueue class represents a queue of songs to be played. It provides methods for adding and removing songs, as well as for manipulating the order of songs in the queue. This class is designed to work with instances of the Song class.
 
-The addSong method adds a new song to the end of the queue, demonstrating basic queue manipulation skills.
+Features
+Adding Songs: The addSong(Song song) method adds a song to the end of the queue.
+Removing Songs: The removeSong(Song song) method removes the first occurrence of a song from the queue, while the removeSong(int index) method removes a song at a specified index.
+Queue Manipulation: Methods such as reverseQueue() and moveSong(int fromIndex, int amount) allow for manipulation of the song order within the queue.
+Cycle Detection: The hasCycle() method checks for the presence of cycles in the queue.
+Shuffling: The shuffledQueue(int p, int s) method creates a shuffled version of the queue based on a prime number p and a seed number s.
 
-The removeSong methods allow for the removal of a song either by specifying the song itself or by index, showcasing searching and deletion operations within a linked list.
+Usage
+Initialization
+PlayQueue playQueue = new PlayQueue();
 
-The size method returns the number of songs currently in the queue, demonstrating knowledge of linked list traversal.
+Adding Songs
+Song song = new Song("Title", "Artist", "Album", durationInSeconds);
+playQueue.addSong(song);
 
-The reverseQueue method reverses the order of songs in the queue, showcasing proficiency in linked list manipulation.
+Removing Songs
+boolean removed = playQueue.removeSong(song);
 
-The moveSong method moves a song within the queue by a specified amount, illustrating skills in repositioning nodes within a linked list.
+Song removedSong = playQueue.removeSong(index);
 
-The swapSongs method swaps the positions of two songs in the queue, demonstrating proficiency in node manipulation.
+Queue Manipulation
+playQueue.reverseQueue();
 
-The hasCycle method checks for cycles within the queue, showcasing understanding of linked list cycle detection algorithms.
+playQueue.moveSong(fromIndex, amount);
 
-The shuffledQueue method creates a randomly shuffled version of the queue, using a formula to determine the new order while avoiding cycles, demonstrating proficiency in algorithm design and implementation.
+Cycle Detection
+boolean hasCycle = playQueue.hasCycle();
 
-This project demonstrates proficiency in data structure manipulation, algorithm design, and object-oriented programming principles.
+Shuffling
+PlayQueue shuffledQueue = playQueue.shuffledQueue(p, s);
+
+Methods
+addSong(Song song): Adds a song to the end of the queue.
+removeSong(Song song): Removes the first occurrence of a song from the queue.
+removeSong(int index): Removes the song at the specified index from the queue.
+size(): Returns the number of songs in the queue.
+reverseQueue(): Reverses the order of songs in the queue.
+moveSong(int fromIndex, int amount): Moves a song from one index to another by the specified amount.
+swapSongs(int firstIndex, int secondIndex): Swaps the positions of two songs in the queue.
+hasCycle(): Checks for the presence of cycles in the queue.
+shuffledQueue(int p, int s): Creates a shuffled version of the queue based on a prime number p and a seed number s.
